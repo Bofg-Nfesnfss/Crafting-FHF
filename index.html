@@ -111,7 +111,7 @@
     <div id="game-container">
         <div id="danger-line"></div>
         <div id="game-over">
-            <h1>馮昊翬合成失敗！</h1>
+            <h1>成功合成馮昊翬</h1>
             <button id="restart-btn" onclick="restartGame()">再試一次</button>
         </div>
     </div>
@@ -125,10 +125,7 @@
             { name: 'FHF5', src: './images/fhf5.jpeg', width: 1204, height: 1681, radius: 50, score: 32 },
             { name: 'FHF6', src: './images/fhf6.jpeg', width: 186, height: 209, radius: 62, score: 64 },
             { name: 'FHF7', src: './images/fhf7.jpeg', width: 236, height: 262, radius: 74, score: 128 },
-            { name: 'FHF8', src: './images/fhf8.jpeg', width: 601, height: 672, radius: 86, score: 256 },
-            { name: 'FHF9', src: './images/fhf9.jpeg', width: 309, radius: 98, score: 512 },
-            { name: 'biu', src: './images/biu.png', width: 856, radius: 112, score: 1024 },
-            { name: 'wwk', src: './images/wwk.png', width: 996, radius: 128, score: 2048 }
+            { name: 'FHF8', src: './images/fhf8.jpeg', width: 601, height: 672, radius: 86, score: 256 }
         ];
 
         // 計算圖片對應物理半徑的縮放比
@@ -296,6 +293,10 @@
                     });
 
                     Composite.add(engine.world, newFruit);
+
+                    if (nextLevel === FRUITS.length - 1) {
+                        triggerGameOver();
+                    }
                 }
             });
         }
