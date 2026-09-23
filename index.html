@@ -130,7 +130,8 @@
 
         // 計算圖片對應物理半徑的縮放比
         FRUITS.forEach(fruit => {
-            fruit.scale = (fruit.radius * 2) / Math.max(fruit.width, fruit.height || fruit.width);
+            const shortestSide = Math.min(fruit.width, fruit.height || fruit.width);
+            fruit.scale = (fruit.radius * 2) / shortestSide;
         });
 
         const { Engine, Render, Runner, Bodies, Composite, Body, Events } = Matter;
@@ -145,7 +146,7 @@
 
         const container = document.getElementById('game-container');
         const width = 360;
-        const height = 600;
+        const height = 540;
 
         function init() {
             score = 0;
