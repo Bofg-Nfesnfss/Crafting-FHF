@@ -121,11 +121,14 @@
             { name: 'FHF1', src: './images/fhf1.jpeg', width: 296, height: 294, radius: 16, score: 4 },
             { name: 'FHF2', src: './images/fhf2.jpeg', width: 695, height: 746, radius: 24, score: 8 },
             { name: 'FHF3', src: './images/fhf3.jpeg', width: 1484, height: 1846, radius: 32, score: 16, imageScale: 1.25 },
-            { name: 'FHF4', src: './images/fhf4.jpeg', width: 1187, height: 1062, radius: 48, score: 32 },
+            { name: 'FHF4', src: './images/fhf4.jpeg', width: 1187, height: 1062, radius: 48, score: 32, imageScale: 1.25 },
             { name: 'FHF5', src: './images/fhf5.jpeg', width: 1204, height: 1681, radius: 60, score: 64 },
             { name: 'FHF6', src: './images/fhf6.jpeg', width: 186, height: 209, radius: 72, score: 128 },
             { name: 'FHF7', src: './images/fhf7.jpeg', width: 236, height: 262, radius: 96, score: 256 },
-            { name: 'FHF8', src: './images/fhf8.jpeg', width: 601, height: 672, radius: 128, score: 512 }
+            { name: 'FHF8', src: './images/fhf8.jpeg', width: 601, height: 672, radius: 128, score: 512 },
+            { name: 'FHF9', src: './images/fhf9.jpeg', width: 601, height: 672, radius: 160, score: 1024 },
+            { name: 'FHF10', src: './images/fhf10.jpeg', width: 601, height: 672, radius: 192, score: 2048 },
+            { name: 'FHF11', src: './images/fhf11.jpeg', width: 601, height: 672, radius: 256, score: 4096 }
         ];
 
         // 計算圖片對應物理半徑的縮放比
@@ -147,6 +150,14 @@
         const container = document.getElementById('game-container');
         const width = 360;
         const height = 540;
+        const bgm = new Audio('./audio/chunfungpakyue.mp3');
+        bgm.loop = true;
+        bgm.volume = 0.5;
+
+        function startBgm() {
+            if (!bgm.paused) return;
+            bgm.play().catch(() => {});
+        }
 
         function init() {
             score = 0;
@@ -194,7 +205,7 @@
         function spawnFruit() {
             if (isGameOver) return;
 
-            const randomIndex = Math.floor(Math.random() * 4);
+            const randomIndex = Math.floor(Math.random() * 3);
             const fruitData = FRUITS[randomIndex];
 
             currentFruit = Bodies.circle(width / 2, 50, fruitData.radius, {
@@ -229,6 +240,7 @@
 
         // 按下時：按住並跟隨位置
         container.addEventListener('pointerdown', (e) => {
+            startBgm();
             if (!canDrop || !currentFruit || isGameOver) return;
             isTouching = true;
             moveFruit(e);
@@ -302,7 +314,7 @@
             });
         }
 
-        // 帶 2 秒緩衝的結束判定
+        // 帶 3 秒緩衝的結束判定
         function checkGameOver() {
             if (isGameOver) return;
 
@@ -322,7 +334,7 @@
                 if (!gameOverTimer) {
                     gameOverTimer = setTimeout(() => {
                         triggerGameOver();
-                    }, 2000);
+                    }, 3000);
                 }
             } else {
                 if (gameOverTimer) {
