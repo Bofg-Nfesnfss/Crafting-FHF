@@ -111,7 +111,7 @@
     <div id="game-container">
         <div id="danger-line"></div>
         <div id="game-over">
-            <h1>成功合成馮昊翬</h1>
+            <h1 id="game-over-title">遊戲結束</h1>
             <button id="restart-btn" onclick="restartGame()">再試一次</button>
         </div>
     </div>
@@ -214,11 +214,21 @@
             if (isGameOver) return;
 
             const randomIndex = Math.floor(Math.random() * 3);
-            const fruitData = FRUITS[randomIndex];
-
-            currentFruit = Bodies.circle(width / 2, 50, fruitData.radius, {
+            currentFruit = createFruitBody(width / 2, 50, randomIndex, {
                 isStatic: true,
-                isSensor: true,
+                isSensor: true
+            });
+
+            Composite.add(engine.world, currentFruit);
+            canDrop = true;
+        }
+
+        function createFruitBody(x, y, level, options = {}) {
+            const fruitData = FRUITS[level];
+            const hitboxRadius = fruitData.radius * (fruitData.imageScale || 1);
+
+            return Bodies.circle(x, y, hitboxRadius, {
+                ...options,
                 render: {
                     sprite: {
                         texture: fruitData.src,
@@ -226,11 +236,8 @@
                         yScale: fruitData.scale
                     }
                 },
-                plugin: { level: randomIndex }
+                plugin: { level }
             });
-
-            Composite.add(engine.world, currentFruit);
-            canDrop = true;
         }
 
         // --- 手機按住拖動、鬆開下落邏輯 ---
@@ -240,7 +247,8 @@
             const rect = container.getBoundingClientRect();
             let x = e.clientX - rect.left;
 
-            const radius = FRUITS[currentFruit.plugin.level].radius;
+            const fruitData = FRUITS[currentFruit.plugin.level];
+            const radius = fruitData.radius * (fruitData.imageScale || 1);
             x = Math.max(radius, Math.min(width - radius, x));
 
             Body.setPosition(currentFruit, { x: x, y: 50 });
@@ -301,22 +309,14 @@
                     score += nextFruitData.score;
                     document.getElementById('score').innerText = score;
 
-                    const newFruit = Bodies.circle(newX, newY, nextFruitData.radius, {
-                        render: {
-                            sprite: {
-                                texture: nextFruitData.src,
-                                xScale: nextFruitData.scale,
-                                yScale: nextFruitData.scale
-                            }
-                        },
-                        plugin: { level: nextLevel },
+                    const newFruit = createFruitBody(newX, newY, nextLevel, {
                         restitution: 0.2
                     });
 
                     Composite.add(engine.world, newFruit);
 
                     if (nextLevel === FRUITS.length - 1) {
-                        triggerGameOver();
+                        triggerGameOver('成功合成馮昊翬');
                     }
                 }
             });
@@ -341,7 +341,7 @@
             if (isOverLine) {
                 if (!gameOverTimer) {
                     gameOverTimer = setTimeout(() => {
-                        triggerGameOver();
+                        triggerGameOver('昊翬合成失敗');
                     }, 3000);
                 }
             } else {
@@ -352,8 +352,9 @@
             }
         }
 
-        function triggerGameOver() {
+        function triggerGameOver(title) {
             isGameOver = true;
+            document.getElementById('game-over-title').innerText = title;
             document.getElementById('game-over').style.display = 'flex';
         }
 
