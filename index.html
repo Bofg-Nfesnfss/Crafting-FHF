@@ -213,7 +213,7 @@
         function spawnFruit() {
             if (isGameOver) return;
 
-            const randomIndex = Math.floor(Math.random() * 3);
+            const randomIndex = Math.floor(Math.random() * 4);
             currentFruit = createFruitBody(width / 2, 50, randomIndex, {
                 isStatic: true,
                 isSensor: true
